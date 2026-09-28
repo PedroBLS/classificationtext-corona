@@ -1,45 +1,56 @@
-*Classificação de Sentimentos sobre o COVID-19*
+# Classificação de Sentimentos em Tweets sobre COVID-19 (PLN)
 
-Este repositório contém um projeto de classificação de sentimentos em tweets relacionados ao COVID-19. O modelo de Random Forest é treinado para classificar sentimentos com base em dados de texto.
+Projeto de Processamento de Linguagem Natural que classifica o sentimento de tweets sobre COVID-19 em **5 classes** (Extremely Negative, Negative, Neutral, Positive, Extremely Positive) com **TF-IDF + Random Forest**.
 
-📂 *Estrutura do Projeto*
+## Dados
 
-Corona_NLP_train.csv: Conjunto de dados de treino.
+Base pública *Coronavirus Tweets NLP* (Kaggle): **41.157 tweets de treino** e **3.798 de teste**, já rotulados por sentimento.
 
-Corona_NLP_test.csv: Conjunto de dados de teste.
+![Distribuição de sentimentos no treino](distribuicao_sentimentos_treino.png)
 
-classificacao_covid.py: Script principal que carrega, processa e treina o modelo.
+## Fluxo
 
-🚀 *Tecnologias Utilizadas*
+1. **Pré-processamento com NLTK:** minúsculas, remoção de pontuação e de stopwords, lematização.
+2. **Vetorização com TF-IDF:** o texto vira uma matriz numérica, ajustada só no treino.
+3. **Divisão:** 80% treino e 20% validação, dentro da base de treino.
+4. **Modelo:** `RandomForestClassifier` (scikit-learn).
+5. **Avaliação:** relatório de precisão, recall e F1 na validação e no conjunto de teste separado.
 
-Python 3
+## Resultados (conjunto de teste, 3.798 tweets)
 
-Pandas (manipulação de dados)
+| Métrica | Valor |
+|---|---|
+| Acurácia | **0,46** |
+| F1 macro | 0,45 |
+| Referência: chutar sempre a classe mais comum (Negative) | 0,27 de acurácia |
 
-Seaborn e Matplotlib (visualização de dados)
+| Classe | Precisão | Recall | F1 |
+|---|---|---|---|
+| Extremely Negative | 0,60 | 0,27 | 0,37 |
+| Negative | 0,44 | 0,41 | 0,42 |
+| Neutral | 0,47 | 0,72 | 0,57 |
+| Positive | 0,39 | 0,56 | 0,46 |
+| Extremely Positive | 0,66 | 0,29 | 0,40 |
 
-Scikit-learn (modelo de machine learning)
+**Leitura dos resultados:**
+- O modelo é bem melhor que o chute (0,46 contra 0,27), mas ainda confunde classes vizinhas: *Extremely Negative* com *Negative* e *Extremely Positive* com *Positive*. Nas classes extremas, o recall fica abaixo de 0,30.
+- Na validação a acurácia foi 0,53, e no teste caiu para 0,46. A queda indica que o modelo generaliza pior para os tweets do conjunto de teste do que para a validação tirada da própria base de treino.
 
-NLTK (processamento de linguagem natural)
+## Próximos passos
 
-📊 *Fluxo do Projeto*
+- Testar modelos lineares (Regressão Logística, SVM linear), que costumam ir melhor com TF-IDF, e usar bigramas.
+- Avaliar a versão com 3 classes (negativo, neutro e positivo), juntando as extremas.
+- Comparar com um modelo pré-treinado de linguagem (por exemplo, BERT).
 
-Carregamento dos dados: O dataset é carregado a partir dos arquivos CSV.
+## Como executar
 
-Pré-processamento: Remoção de pontuação, stopwords e lematização das palavras.
+```bash
+pip install -r requirements.txt
+python "Classificação de texto.py"
+```
 
-Vetorização com TF-IDF: Conversão do texto para uma representação numérica.
+O script lê os CSVs da própria pasta, baixa os recursos do NLTK (stopwords e wordnet), imprime os relatórios e salva o gráfico de distribuição. Leva alguns minutos, por causa do Random Forest com milhares de atributos TF-IDF.
 
-Divisão dos dados: Separação em treino e validação.
+## Tecnologias
 
-Treinamento do modelo: Modelo Random Forest é treinado.
-
-Avaliação do modelo: Exibição de métricas como precision, recall e F1-score.
-
-Visualização: Gráfico da distribuição dos sentimentos.
-
-📌 *Resultados*
-
-Após a execução do script, serão gerados:
-
-Relatórios de classificação no terminal.
+Python, Pandas, scikit-learn, NLTK, Seaborn, Matplotlib.

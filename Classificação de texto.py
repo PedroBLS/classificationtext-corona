@@ -7,11 +7,17 @@ from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 import string
+from pathlib import Path
+import nltk
+
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
 from nltk.stem import WordNetLemmatizer
 
 # Carregar os dados de treino e teste
-train_data = pd.read_csv(r"D:\Program Files (x86)\Projetos VSCode\Portifólio\Corona virus classification\archive\Corona_NLP_train.csv", encoding='latin1')
-test_data = pd.read_csv(r"D:\Program Files (x86)\Projetos VSCode\Portifólio\Corona virus classification\archive\Corona_NLP_test.csv", encoding='latin1')
+BASE = Path(__file__).resolve().parent
+train_data = pd.read_csv(BASE / "Corona_NLP_train.csv", encoding='latin1')
+test_data = pd.read_csv(BASE / "Corona_NLP_test.csv", encoding='latin1')
 
 # Pré-processamento dos dados
 stop_words = set(stopwords.words('english'))
@@ -52,5 +58,5 @@ print(classification_report(test_data['Sentiment'], y_pred_test))
 # Visualizações (opcional)
 sns.countplot(x='Sentiment', data=train_data)
 plt.title('Distribuição de Sentimentos nos Dados de Treino')
-plt.savefig("distribuicao_sentimentos_treino.png")
-plt.show()
+plt.savefig(BASE / "distribuicao_sentimentos_treino.png", bbox_inches="tight")
+plt.close()
